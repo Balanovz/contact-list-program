@@ -1,0 +1,146 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+class contact {
+	string name, surname, email, company;
+public:
+	void add_contact();
+	string get_name()const { return name; }
+	string get_surname()const { return surname; }
+	string get_email()const { return email; }
+	string get_company()const { return company; }
+};
+
+void contact::add_contact() {
+	cout << "\nEnter surname: ";
+	cin >> surname;
+	cout << "Enter name: ";
+	cin >> name;
+	cout << "Enter email: ";
+	cin >> email;
+	cout << "Enter company: ";
+	cin >> company;
+}
+
+ostream& operator<<(ostream& ost, contact t) {
+	return ost << "surname: " << setw(17) << t.get_surname() << endl
+			   << "name: " << setw(20) << t.get_name() << endl
+			   << "company: " << setw(17) << t.get_company() << endl
+			   << "email: " << setw(19) << t.get_email() << endl;
+}
+
+
+char menu() {
+	char temp;
+		cout << "\nSELECT NUMBER" << endl
+			<< "1. to add contact in list" << endl
+			<< "2. to search contact in list" << endl
+			<< "3. to delete contact from list" << endl
+			<< "4. to show all contact list" << endl
+			<< "to exit from contact list write \"0\"" << endl
+			<< "your answer: ";
+		cin >> temp;
+	cout << endl;
+	return temp;
+}
+
+
+void search_contact(vector<contact>&v) {
+	string s, n;
+	cout << "Enter contact surname: ";
+	cin >> s;
+	cout << "Enter contact name: ";
+	cin >> n;
+	bool status = false;
+	int index;
+	for (int i = 0; i < v.size(); ++i) 
+		if (v[i].get_surname() == s && v[i].get_name() == n) {
+			status = true;
+			index = i;
+		}
+	status ? cout << v[index] : cout << "\ncontact was not found.";
+}
+
+
+void delete_contact(vector<contact>& v) {
+	string s, n;
+	cout << "Enter contact surname: ";
+	cin >> s;
+	cout << "Enter contact name: ";
+	cin >> n;
+	string answer;
+	bool st1 = true, st2 = false;
+	for (int i = 0; i < v.size(); ++i) 
+		if (v[i].get_surname() == s && v[i].get_name() == n) {
+			st1 = false;
+			cout << "\nAre you sure to delete this contact? (yes, no)\n";
+			cin >> answer;
+			if (answer == "yes") {
+				st2 = true;
+				v.erase(v.begin() + i);
+			}
+			break;
+		}
+	if (st1)
+		cout << "\ncontact was not found.";
+	else if (st2)
+		cout << "\ncontact has been deleted.";
+	else
+		cout << "\ncancel delete operation.";
+	
+}
+
+
+void show_contact_list(const vector<contact>& v) {
+	for (int i = 0; i < v.size(); ++i) 
+		cout << i + 1 << ". " << v[i].get_surname()
+			<< '\t' << v[i].get_name() << endl;
+}
+
+
+bool list_is_empty(const vector<contact>& v) {
+	bool status = false;
+	if (v.size() == 0) {
+		cout << "\ncontact list is empty.\n";
+		status = true;
+	}
+	return status;
+}
+
+
+int main() {
+	contact human;
+	vector<contact> data;
+	char temp;
+	do {
+		system("CLS");
+		temp = menu();
+		switch (temp) {
+		case '1'://to add contact
+			human.add_contact();
+			data.push_back(human);
+			break;
+		case '2'://to search contact
+			if (list_is_empty(data)) break;
+			else search_contact(data);
+			break;
+		case '3'://to delete contact
+			if (list_is_empty(data)) break;
+			else delete_contact(data);
+			break;
+		case '4'://to show all contact list
+			if (list_is_empty(data)) break;
+			show_contact_list(data);
+			break;
+		default:
+			cout << "\nplease, repeat the command.";
+		}
+		system("pause > 0");
+	} while (temp != 0);
+
+
+	return 0;
+}
